@@ -1,0 +1,6 @@
+{
+  "name": "COS 301 Client Accounts API",
+  "description": "COS 301 Client Accounts API",
+  "repository": "https://github.com/NtlatlengL/CAS",
+  "keywords": ["node", "express", "heroku", "CAS", "Client Accounts Subsystem"]
+}
