@@ -31,6 +31,21 @@ app.use(express.static('public'));
        res.sendFile(__dirname + "/index.html");
     });
 
+
+/**
+Opening databse
+**/
+
+let db = new sqlite3.Database('./ClientAccountsDatabase.sqlite3', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+        return console.error(err.message);
+    }
+});
+
+/**
+Interface Calls
+**/
+
 app.post('/searchUserID', function(req, res, next) {
   queries.getEntry(req.body.userId,function(amount){
 
@@ -38,10 +53,30 @@ app.post('/searchUserID', function(req, res, next) {
   });
 });
 
+app.post('/create', function (req, res, next) {
+    console.log('request received:', req.body.userID);
+      queries.createAccount(req.body.userID,function(amount){
+       
+     res.json({create: 'Entry Successfully Created!'});
+  });
+});
+
 app.post('/accountID', function(req, res, next) {
-  queries.selectBalance(req.body.AccountId,function(amount){
+    console.log('recieved');
+      queries.selectBalance(req.body.AccountId,function(amount){
+        console.log(req.body.AccountId);
+        res.json({amt: amount})
+      });
+      
+        //console.log(res.json({smt : statement}));
+});
+
+app.post('/statement', function(req, res, next) {
+    console.log("its in");
     console.log(req.body.AccountId);
-    res.json({amt : amount});
+    queries.printMini(req.body.AccountId, function(statement){
+        console.log(statement);
+    res.json(statement);
   });
 });
 
@@ -58,15 +93,21 @@ app.post('/deposit', function (req, res, next) {
     res.json({amt : amount});
   });
 });
-/**
-Opening databse
-**/
 
-let db = new sqlite3.Database('./ClientAccountsDatabase.sqlite3', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
+app.post('/deactivate', function (req, res, next) {
+    console.log('request received:', req.body.userID);
+    queries.deactivateUser(req.body.userID,function(amount){
+        res.json({msg : amount});
+      });
 });
+
+app.post('/activate', function (req, res, next) {
+    console.log('request received:', req.body.userID);
+    queries.activateUser(req.body.userID,function(amount){
+        res.json({msg : amount});
+      });
+});
+
 
 
 /**
